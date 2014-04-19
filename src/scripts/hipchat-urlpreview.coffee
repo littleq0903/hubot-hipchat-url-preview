@@ -1,14 +1,11 @@
-# Script: urlpreview.coffee
-# Author: Colin Su <littleq0903@gmail.com>
 # Description:
-#   A hubot script to show the preview of urls in your Hipchat messages.
+#   preview the link content
 
 request = require 'request'
 cheerio = require 'cheerio'
 readability = require 'node-readability'
 hipchat = require 'node-hipchat'
 
-# capitalize for transforming your chatroom name
 capitalize = (s) ->
     splited = s.split("_")
     uppered = splited.map (w) -> 
@@ -19,6 +16,8 @@ capitalize = (s) ->
 module.exports = (robot) ->
     robot.hear /(^|\s)((https?:\/\/)?([\w-]+(\.[\w-]+)+\.?(:\d+)?(\/\S*)?))/gi, (msg) ->
         target_url = msg.match[0]
+        #target_url = target_url.replace /^https?:\/\//, ""
+        #target_url = target_url.replace /\/$/, ""
         console.log target_url
         request { uri: target_url, method: 'GET', headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36' } }, (error, res, body) ->
             if not error and res.statusCode == 200
@@ -68,7 +67,7 @@ module.exports = (robot) ->
                     
                     if img_url
                         console.log "[DEBUG] Image URL: #{img_url}" 
-                        preview_message = "<strong>#{title}</strong><br><img height=150 src=\"#{img_url}\">"
+                        preview_message = "<strong>#{title}</strong><br><img width=200 src=\"#{img_url}\">"
                     else
                         preview_message = "<strong>#{title}</strong>"
 
